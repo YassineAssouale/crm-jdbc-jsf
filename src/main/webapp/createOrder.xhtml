@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<meta charset="utf-8" />
+	<title>Order Creation</title>
+	<h:outputStylesheet name="style.css" />
+</h:head>
+<h:body>
+	<ui:include src="inc/menu.xhtml" />
+	<h:form>
+		<fieldset>
+			<legend>Customer Information</legend>
+			<h:selectOneRadio value="#{orderBean.customerChoice}">
+				<f:selectItem itemValue="Yes" itemLabel="Yes" />
+				<f:selectItem itemValue="No" itemLabel="No" />
+				<f:ajax render="panelChoice" />
+			</h:selectOneRadio>
+			
+			<h:panelGroup id="panelChoice">
+			
+				<h:panelGroup layout="block" id="oldCustomer"
+					rendered="#{orderBean.customerChoice == 'No'}">
+					<!-- #{orderBean.customerId} == itemValue the customer.id that will be selected by user -->
+					<h:selectOneMenu value="#{orderBean.customerId}">
+						<f:selectItems value="#{orderBean.customers}" var="customer"
+							itemValue="#{customer.id}"
+							itemLabel="#{customer.firstname} #{customer.lastname}" />
+					</h:selectOneMenu>
+				</h:panelGroup>
+				
+				<h:panelGroup layout="block" id="newCustomer"
+					rendered="#{orderBean.customerChoice == 'Yes'}">
+					<ui:include src="inc/inc_customer_form.xhtml">
+						<!-- parameter's value is used to save the new customer and use it with submit button -->
+						<ui:param name="customerBean" value="#{orderBean}"/>
+					</ui:include>
+				</h:panelGroup>
+				
+			</h:panelGroup>
+		</fieldset>
+		<fieldset>
+			<legend>Order Information</legend>
+			<ui:include src="inc/inc_order_form.xhtml" />
+			<br/>
+		</fieldset>
+		<h:commandButton styleClass="submitButton" value="Submit" action="#{orderBean.createOrder}"/>
+	</h:form>
+ </h:body>
+</html>
